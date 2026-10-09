@@ -156,12 +156,10 @@ describe('Free socket', () => {
     const t = portAfter(base, ['Kurve90_60', 'Gerade120_60-60']) as Extract<ConnectTarget, { kind: 'port' }>;
     const r = find('side+0.3', base, { ...t, p: [t.p[0] + 0.3, t.p[1], t.p[2]] });
     expect(r[0].n).toBe(2); expect(r[0].err).toBeCloseTo(0.3, 3);
-    // 1.3 mm = 2 grid units (1.067 mm) + 0.233: e.g. 2x Distanz46 (2 x 24.533) against a curve R48 (48.0)
+    // demo-on-grid: no part moves by less than a third of a step any more, so a 1.3 mm sideways target is unreachable
+    // (before, 2x Distanz46 against a curve R48 absorbed 1.067 mm of it)
     const t2: Extract<ConnectTarget, { kind: 'port' }> = { ...t, p: [t.p[0] - 1.3, t.p[1], t.p[2]] };
-    const r2 = find('side-1.3', base, t2);
-    expect(r2.length).toBeGreaterThanOrEqual(1);
-    expect(r2[0].n).toBe(8); expect(r2[0].err).toBeCloseTo(0.233, 3);
-    expect(endsAt(base, r2[0], t2)).toBe(true);
+    expect(find('side-1.3', base, t2)).toEqual([]);
   });
 });
 
@@ -213,10 +211,15 @@ describe('Branch end, backing up, straight runs', () => {
     expect(errors(out)).toEqual([]);
   });
   it('re-filling needs a run that points along the gap and a length the straights can make', () => {
-    // 13-part variant: the end is 8 mm short AND 8 mm beside the entrance; the last run would have to be 56 mm (7 steps),
-    // which no straight/spacer combination makes
-    const els = decodeChain('m1.9.23.x.u.2w.g.2h.12@6:2.y*.g.d.l*.c')!.elements;
-    expect(findRunAdjustments(els, entryOf(els), { strand: 1 })).toEqual([]);
+    // 13-part variant: the end is 8 mm short AND 8 mm beside the entrance. demo-on-grid: with the 24 mm spacer both runs
+    // can be re-filled (before: the last run would have had to be 56 mm, which no straights made)
+    const els = decodeChain('m1.9.23.x.u.2w.g.2h.12@6:2.y*.g.d.l*.c')!.elements, t = entryOf(els);
+    const r = findRunAdjustments(els, t, { strand: 1 });
+    expect(r[0].edits!.map((e) => [e.at, e.count, e.parts.map((p) => p.part)])).toEqual([
+      [9, 2, ['Gerade120_60-60_16mm', 'Gerade88_60-40_16mm', 'Distanz46-0_40-40_16mm']], [12, 1, ['Gerade60_40-40_16mm', 'Distanz46-0_40-40_16mm']]]);
+    const out = applyConnection(els, r[0]), q = branchEnd(out);
+    expect(Math.hypot(q.exit!.p[0] - t.p[0], q.exit!.p[1] - t.p[1])).toBeLessThan(0.05);
+    expect(errors(out)).toEqual([]);
   });
   it('from the end of a branch, also starting one or two parts earlier (dropped parts are replaced)', () => {
     const els = decodeChain(TRACK.replace(/\.52$/, ''))!.elements, t = entryOf(els);   // without the Y merge
@@ -237,18 +240,22 @@ describe('Branch end, backing up, straight runs', () => {
   const laneOf = (els: ChainElement[]): Extract<ConnectTarget, { kind: 'port' }> => {
     const f = solveChain(els).freePorts.find((q) => q.idx === 2 && q.port === 3)!; return { kind: 'port', p: f.w.p, n: f.w.n };
   };
-  it('connectGap: 6.4 mm ahead, not a whole number of grid thirds, caused by the spiral and Gerade88', () => {
+  it('connectGap: demo-on-grid: exactly one step (8 mm) ahead, on the grid; re-filling closes it with the spiral kept', () => {
     const els = decodeChain(SPIRAL)!.elements, t = laneOf(els);
     const g = connectGap(els, t)!;
-    expect(g.along).toBeCloseTo(6.4, 2); expect(g.side).toBeCloseTo(0, 2);
-    expect(g.onGrid).toBe(false);
-    expect(g.offGrid.map((i) => ids(els)[i])).toEqual(['Spirale_100-60', 'Gerade88_60-40']);
-    expect(findRunAdjustments(els, t)).toEqual([]);
+    expect(g.along).toBeCloseTo(8, 2); expect(g.side).toBeCloseTo(0, 2);
+    expect(g.onGrid).toBe(true);
+    expect(g.offGrid).toEqual([]);
+    const r = findRunAdjustments(els, t);
+    expect(r[0].edits!.map((e) => [e.at, e.count])).toEqual([[6, 1], [11, 2]]);
+    expect(r[0].edits![0].parts[0]).toBe(els[6]);                               // the Gerade88 stays, a spacer is added
+    expect(r[0].edits![0].parts[1].part).toMatch(/^Distanz/);
+    expect(ids(applyConnection(els, r[0]))[5]).toBe('Spirale_100-60');
   });
   it('two parallel runs: with a slide instead of the spiral, the Gerade88 run and the opposite run both grow', () => {
     const els = decodeChain(SPIRAL)!.elements; els[5] = { part: 'Rutsche120_100-60_16mm' };
     const t = laneOf(els);
-    expect(connectGap(els, t)!.along).toBeCloseTo(14.933, 2);                    // still off: Gerade88 is 2 units short
+    expect(connectGap(els, t)!.along).toBeCloseTo(16, 2);                        // demo-on-grid: two whole steps
     const r = findRunAdjustments(els, t);
     expect(r.length).toBeGreaterThanOrEqual(1);
     expect(r.every((s) => JSON.stringify(s.edits!.map((e) => [e.at, e.count])) === '[[6,1],[11,2]]')).toBe(true);
@@ -309,7 +316,7 @@ describe('Branch end, backing up, straight runs', () => {
     const els = decodeChain(TRACK)!.elements;
     const g = connectGap(els, entryOf(els), 1)!;
     expect(g.offGrid).not.toContain(0);                                           // the target part (entry = its origin)
-    expect(g.offGrid.map((i) => ids(els)[i])).toEqual(['Spirale_100-60', 'Distanz46-0_40-40']);
+    expect(g.offGrid).toEqual([]);                                                // demo-on-grid: nothing off the grid
   });
   it('applyEdits keeps a part that stays (same element: settings like omit survive)', () => {
     const els = chain('StartSchale_60', 'Gerade120_60-50', 'Gerade120_50-40', 'EndSchale_40');

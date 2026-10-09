@@ -61,10 +61,10 @@ describe('Sockets', () => {
       expect((q as unknown as { kind?: string }).kind).toBeUndefined();
     }
   });
-  it('straight is 64 long with sockets at both ends; curves R24 / R48; spacers 24.5 / 34.7 / 50.7', () => {
+  it('straight is 64 long with sockets at both ends; curves R24 / R48; spacers 24 / 34.7 / 50.7', () => {
     expect(part('Gerade120_40-40').ports.map((q) => q.p)).toEqual([[0, 0, 5.7], [64, 0, 5.7]]);
     expect(part('Kurve90_40').radius).toBe(24); expect(part('LangeKurve90_R90_40').radius).toBe(48);
-    expect(part('Distanz46-0_40-40').length).toBeCloseTo(24.53, 2);
+    expect(part('Distanz46-0_40-40').length).toBeCloseTo(24.0, 2);    // demo-on-grid: 24.533 -> 24
     expect(part('Distanz65-0_40-40').length).toBeCloseTo(34.67, 2);
     expect(part('SchieneDistanz95-0_40-40').length).toBeCloseTo(50.67, 2);
   });

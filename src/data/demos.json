@@ -247,10 +247,10 @@
      "part": "Kurve90_50_16mm"
     },
     {
-     "part": "Gerade100_50-40_16mm"
+     "part": "Gerade120_50-40_16mm"
     },
     {
-     "part": "Distanz65-0_40-40_16mm"
+     "part": "Gerade60_40-40_16mm"
     },
     {
      "part": "Kurve90_50-40_16mm"
@@ -369,7 +369,7 @@
      "part": "Gerade60_50-40_16mm"
     },
     {
-     "part": "Distanz65-0_40-40_16mm"
+     "part": "Gerade120_40-40_16mm"
     },
     {
      "part": "YMerge120_40-40_16mm"
@@ -388,17 +388,17 @@
      }
     },
     {
-     "part": "Gerade80_50-40_16mm"
+     "part": "LangeKurve90_R90_50-40_16mm"
     },
     {
-     "part": "Kurve90_40_16mm"
+     "part": "Distanz46-0_40-40_16mm"
     },
     {
-     "part": "Gerade120_40-40_16mm"
-    },
-    {
-     "part": "Kurve90_40_16mm",
+     "part": "LangeKurve90_R90_40_16mm",
      "reversed": true
+    },
+    {
+     "part": "Distanz46-0_40-40_16mm"
     }
    ]
   },
@@ -462,7 +462,7 @@
      "part": "Distanz46-0_40-40_16mm"
     },
     {
-     "part": "LangeKurve90_R90_60-50_16mm",
+     "part": "Kurve90_60-50_16mm",
      "branch": {
       "from": 11,
       "port": 3
@@ -472,10 +472,10 @@
      "part": "LangeKurve90_R90_50-40_16mm"
     },
     {
-     "part": "Gerade120_40-40_16mm"
+     "part": "Distanz46-0_40-40_16mm"
     },
     {
-     "part": "Kurve90_40_16mm",
+     "part": "LangeKurve90_R90_40_16mm",
      "reversed": true
     },
     {

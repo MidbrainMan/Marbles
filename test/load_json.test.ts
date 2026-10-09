@@ -25,7 +25,9 @@ describe('Load JSON', () => {
     }
   });
   it('Y-merge circuit loaded as in the builder: circuit, one branch, no errors', () => {
-    const els = sanitizeElements(sanitizeElements(JSON.parse(JSON.stringify(CIRCUIT))));
+    // demo-on-grid: CIRCUIT was tuned to the old off-grid flip-flop / Distanz46 and no longer closes; the re-routed demo
+    // loop covers the same case (Y merge in a circuit, flip-flop branch)
+    const els = sanitizeElements(sanitizeElements(JSON.parse(JSON.stringify(demos.demos.find((d) => d.id === 'loop-funnel-flipflop')!.chain))));
     expect(els.filter((e) => e.branch).length).toBe(1);
     const L = solveChain(els);
     expect(L.ring).toBe(true);

@@ -25,10 +25,9 @@ describe('Grid at the open end', () => {
     expect(g.along.state).toBe('on');
     expect(g.across.state).toBe('third');
   });
-  it('Distanz46 is off the one-third grid', () => {
+  it('Distanz46 is on the grid (demo-on-grid: 24 mm = 3 steps)', () => {
     const g = endInfo('StartSchale_60', 'Gerade120_60-50', 'Kurve90_50-40', 'Distanz46-0_40-40')!;
-    expect(g.along.state).toBe('off');
-    expect(g.along.need).toBeGreaterThan(0.3);
+    expect(g.along.state).toBe('on');
   });
   it('all demo tracks: result present (axis-aligned direction)', () => {
     for (const d of ['mini', 'starter-slide', 'three-levels', 'lift-circuit']) {

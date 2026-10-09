@@ -44,12 +44,12 @@ describe('Catalog', () => {
     // parts without a kit: kitOf/asmOf return null
     expect(kitOf(part('Gerade120_40-40'))).toBeNull(); expect(asmOf(part('Gerade120_40-40'))).toBeNull();
   });
-  it('inlet on top at the -x end (one level up), exit left +y or right -y at z 5.7', () => {
+  it('inlet on top at the -x end (one level up), exit left +y or right -y at z 5.7 (demo-on-grid: outlets at 32 | +-40)', () => {
     const L = part('Kippwippe_120-60_Links'), R = part('Kippwippe_120-60_Rechts');
     expect(L.ports[L.lane[0]!]).toEqual({ p: [0, 0, PORT_Z + LEVEL], n: [-1, 0, 0] });
     expect(R.ports[R.lane[0]!]).toEqual({ p: [0, 0, PORT_Z + LEVEL], n: [-1, 0, 0] });
-    expect(L.ports[L.lane[1]!]).toEqual({ p: [28.6, 36, PORT_Z], n: [0, 1, 0] });
-    expect(R.ports[R.lane[1]!]).toEqual({ p: [28.6, -36, PORT_Z], n: [0, -1, 0] });
+    expect(L.ports[L.lane[1]!]).toEqual({ p: [32, 40, PORT_Z], n: [0, 1, 0] });
+    expect(R.ports[R.lane[1]!]).toEqual({ p: [32, -40, PORT_Z], n: [0, -1, 0] });
     expect([L.turn, R.turn]).toEqual([90, -90]);
   });
   it('filament and time = sum of the modules, Japandi with the grooved body', () => {

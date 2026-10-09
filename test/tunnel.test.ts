@@ -18,7 +18,8 @@ describe('fillLength (16 mm spacers 24.5 / 34.7, rail 50.7)', () => {
     expect(fillLength(64, 'channel')).toEqual(['Gerade120_40-40_16mm']);
     expect(fillLength(59.2, 'channel')).toEqual(['Distanz65-0_40-40_16mm', 'Distanz46-0_40-40_16mm']);
     expect(fillLength(114.67, 'rail')).toEqual(['SchieneGerade120_40-40_16mm', 'SchieneDistanz95-0_40-40_16mm']);
-    expect(fillLength(114.67, 'channel')).toBeNull();
+    // demo-on-grid: with the 24 mm spacer the 114.67 mm run (43 thirds) becomes fillable
+    expect(fillLength(114.67, 'channel')).toEqual(['Gerade60_40-40_16mm', 'Distanz65-0_40-40_16mm', 'Distanz46-0_40-40_16mm', 'Distanz46-0_40-40_16mm']);
     expect(fillLength(10, 'channel')).toBeNull();                 // shorter than the shortest part
     expect(fillLength(-5, 'channel')).toBeNull();
   });
@@ -38,7 +39,8 @@ describe('Tunnel swap', () => {
     const r = tunnelSwap(els, L, a);
     expect(r.ok).toBe(true);
     if (!r.ok) return;
-    expect(ids(r.elements).slice(13, 20)).toEqual(['Gerade80_40-40', 'Distanz65-0_40-40', 'Distanz65-0_40-40', 'AdapterTunnelQuer120_40-40_Q32', 'Gerade80_40-40', 'Distanz65-0_40-40', 'Distanz65-0_40-40']);
+    // demo-on-grid: same 112 mm per side, now Gerade100 + Distanz65 + Distanz46 (24 mm) instead of Gerade80 + 2x Distanz65
+    expect(ids(r.elements).slice(13, 20)).toEqual(['Gerade100_40-40', 'Distanz65-0_40-40', 'Distanz46-0_40-40', 'AdapterTunnelQuer120_40-40_Q32', 'Gerade100_40-40', 'Distanz65-0_40-40', 'Distanz46-0_40-40']);
     const L2 = solveChain(r.elements);
     // the collision with the adapter is gone (the track still runs into the SchieneRutsche afterwards - the example is only for the swap)
     expect(L2.issues.filter((i) => i.text.includes('AdapterGerade120_16mm'))).toEqual([]);

@@ -67,7 +67,7 @@ export function footprintPieces(p: Part): Piece[] {
     return pieces;
   }
   if (p.id.startsWith('Spirale')) {
-    // helix: inlet at (-42.7 | -24) on rim 100 (platform level), one turn R24, outlet rim 60 at (12.8 | -24)
+    // helix: inlet at (-42.7 | -24) on rim 100 (platform level), one turn R24, outlet rim 60 at (13.333 | -24)
     const rOut = Math.max(p.bbox[1][0], p.bbox[1][1]);
     const pieces: Piece[] = [
       { poly: circle(0, 0, 15.5), z0: 0, z1: rimMm(100) },                  // column r 15.47
@@ -83,12 +83,13 @@ export function footprintPieces(p: Part): Piece[] {
     cache.set(p.id, pieces);
     return pieces;
   } else if (p.id.startsWith('Trichter') || p.id.startsWith('AdapterTrichter')) {
-    polys = [circle(0, 0, 38.133), rect(32, -13.333, f[2], 13.333), rect(f[0], 14.933, -20.533, f[3])];
+    const ey = p.ports.find((q) => q.n[0] > 0.5)!.p[1];   // exit channel, centred on the outlet
+    polys = [circle(0, 0, 38.133), rect(32, Math.min(-13.333, ey - 13.333), f[2], Math.max(13.333, ey + 13.333)), rect(f[0], 14.933, -20.533, f[3])];
   } else if (p.id.startsWith('AdapterSpirale')) {
     // spiral height adapter: column disc r 15.467 + bar under inlet and outlet (y -37.333 .. -10.667)
-    polys = [circle(0, 0, 15.467), rect(f[0], -37.333, 12.8, -10.667)];
+    polys = [circle(0, 0, 15.467), rect(f[0], -37.333, p.ports[1].p[0], -10.667)];
   } else if (p.id.startsWith('Kippwippe_120-60') || p.id.startsWith('AdapterKippwippe')) {
-    // flip-flop (body and height adapter): tower x 0..10.6 (|y| 13.333), block x 10.6..47.6 (|y| 36)
+    // flip-flop (body and height adapter): tower x 0..10.6 (|y| 13.333), block x 10.6..foot (|y| foot)
     polys = [rect(0, -13.333, 10.6, 13.333), rect(10.6, f[1], f[2], f[3])];
   } else if (p.id.startsWith('XKreuzung') || p.id.startsWith('AdapterXKreuzung')) {
     polys = [rect(f[0], -13.333, f[2], 13.333), rect(-13.333, f[1], 13.333, f[3])];

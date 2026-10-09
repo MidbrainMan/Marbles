@@ -20,7 +20,9 @@ const KNOWN_OFF_GRID = [
 describe('Grid audit', () => {
   it('released parts off the one-third grid: exactly the known list', () => {
     const off = catalog.parts.filter((p) => p.released && offGrid(p)).map((p) => p.id);
-    expect(off.sort()).toEqual([...KNOWN_OFF_GRID].sort());
+    // demo-on-grid: all five parts moved onto the grid, only the deliberate cross tunnel 95 is left
+    expect(off.sort()).toEqual(['AdapterTunnelQuer95_40-40_Q32_16mm']);
+    expect(KNOWN_OFF_GRID.length).toBe(13);
   });
   it('the one-third shifters are on the grid (Gerade80/100, Distanz65), so are curves, slides and lifts', () => {
     for (const s of ['Gerade80_40-40', 'Gerade100_40-40', 'Distanz65-0_40-40', 'SchieneDistanz95-0_40-40', 'Kurve90_40', 'LangeKurve90_R90_40',

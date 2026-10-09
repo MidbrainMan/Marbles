@@ -13,11 +13,11 @@ const RIMS = ['40-40', '50-40', '50-50', '60-50', '60-60'];
 const ADAPTERS: [string, string, number, boolean][] = [   // adapter, English name, length, vertical socket
   ['AdapterYMerge120_16mm', 'AdapterYMerge120_16mm', 64, true],
   ['AdapterGerade100_16mm', 'AdapterStraight100_16mm', 53.333, true],
-  ['AdapterGerade88_16mm', 'AdapterStraight88_16mm', 46.933, true],
+  ['AdapterGerade88_16mm', 'AdapterStraight88_16mm', 48, true],   // demo-on-grid: 46.933 -> 48
   ['AdapterGerade80_16mm', 'AdapterStraight80_16mm', 42.667, true],
   ['AdapterGerade60_16mm', 'AdapterStraight60_16mm', 32, false],
   ['AdapterDistanz65_16mm', 'AdapterSpacer65_16mm', 34.667, false],
-  ['AdapterDistanz46_16mm', 'AdapterSpacer46_16mm', 24.533, false],
+  ['AdapterDistanz46_16mm', 'AdapterSpacer46_16mm', 24, false],   // demo-on-grid: 24.533 -> 24
 ];
 /** part -> expected adapter */
 const PART_ADAPTER: [string, string][] = [

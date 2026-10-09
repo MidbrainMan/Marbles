@@ -134,7 +134,7 @@ describe('X-crossing: lane and pass-through', () => {
   });
   it('after plugging into the free lane the next part attaches at its exit (out)', () => {
     const els = demo('flipflop-crossing');
-    const k = els.findIndex((e) => e.part === id('Distanz65-0_40-40'));
+    const k = els.findIndex((e) => e.part === id('Gerade60_40-40'));
     const L = solveChain(els.slice(0, k + 1));                          // strand ends in the crossing
     const q = L.placed[k];
     expect(q.dock!.idx).toBe(3);
@@ -145,7 +145,7 @@ describe('X-crossing: lane and pass-through', () => {
   });
   it('a branch at the exit of the free lane is fed by the docking strand (ball check); without feed it gets a push + hint', () => {
     const els = demo('flipflop-crossing');
-    const k = els.findIndex((e) => e.part === id('Distanz65-0_40-40'));
+    const k = els.findIndex((e) => e.part === id('Gerade60_40-40'));
     const X = els[3];
     // strand ends in the crossing; a third strand starts at the high end of the cross lane (port 3)
     const a = els.slice(0, k + 1), tail = chain('Kurve90_50-40', 'EndSchale_40');
